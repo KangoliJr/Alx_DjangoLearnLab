@@ -1,1 +1,1 @@
-this is my setup.
+LibraryProject: A Django-based project setup guide
