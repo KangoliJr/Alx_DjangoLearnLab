@@ -1,1 +1,1 @@
-This is my django setup
+this is my setup.
