@@ -1,1 +1,1 @@
-data = Book.objects.update(title="Nineteen Eighty-Four")
+book.title = Book.objects.update(title="Nineteen Eighty-Four")
