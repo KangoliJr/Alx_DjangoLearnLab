@@ -1,0 +1,1 @@
+data = Book.objects.delete()
