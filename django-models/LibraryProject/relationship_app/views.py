@@ -16,12 +16,22 @@ class LibraryDetailView(DetailView):
     template_name = "relationship_app/library_detail.html"
     context_object_name = 'library'
     
+# def register(request):
+#     return RegisterView.as_view(template_name='relationship_app/register.html')(request)
+# class RegisterView(CreateView):
+#     form_class = UserCreationForm
+#     success_url = reverse_lazy('register')
+#  also correct 
+# using function based views
 def register(request):
-    return RegisterView.as_view(template_name='relationship_app/register.html')(request)
-class RegisterView(CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('register')
-
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse_lazy('login'))
+    else:
+        form = UserCreationForm()
+    return render(request, 'relationship_app/register.html', {'form': form})
 class LoginView(LoginView):
     success_url = reverse_lazy('login')
 
