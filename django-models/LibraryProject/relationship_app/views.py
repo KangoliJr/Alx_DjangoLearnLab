@@ -20,8 +20,8 @@ class RegisterView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('register')
 
-class CustomLoginView(LoginView):
+class LoginView(LoginView):
     success_url = reverse_lazy('login')
 
-class CustomLogoutView(LogoutView):
+class LogoutView(LogoutView):
     success_url = reverse_lazy('logout')    
