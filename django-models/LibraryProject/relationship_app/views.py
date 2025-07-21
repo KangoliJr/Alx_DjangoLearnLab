@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Book, Library
 from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
@@ -16,6 +16,8 @@ class LibraryDetailView(DetailView):
     template_name = "relationship_app/library_detail.html"
     context_object_name = 'library'
     
+def register(request):
+    return RegisterView.as_view(template_name='relationship_app/register.html')(request)
 class RegisterView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('register')
