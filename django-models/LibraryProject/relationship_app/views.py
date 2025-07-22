@@ -3,9 +3,10 @@ from .models import Book, Library
 from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView #appleicable if I use CBV
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required, user_passes_test
 # Create your views here.
 def list_books(request):
     books = Book.objects.all()
@@ -36,4 +37,25 @@ class LoginView(LoginView):
     success_url = reverse_lazy('login')
 
 class LogoutView(LogoutView):
-    success_url = reverse_lazy('logout')    
+    success_url = reverse_lazy('logout')   
+    
+# Role-Based Views
+def check_role(role_name):
+    def decorator(user):
+        return user.is_authenticated and user.userprofile.role==role_name
+    return decorator
+
+@login_required
+@user_passes_test(check_role('Admin'))
+def admin_view(request):
+    return render(request, 'admin_view.html')
+
+@login_required
+@user_passes_test(check_role('Librarian'))
+def admin_view(request):
+    return render(request, 'librarian_view.html')
+
+@login_required
+@user_passes_test(check_role('Member'))
+def admin_view(request):
+    return render(request, 'member_view.html')
