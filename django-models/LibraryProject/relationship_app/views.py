@@ -7,6 +7,7 @@ from django.views.generic import CreateView #appleicable if I use CBV
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponseForbidden
 # Create your views here.
 def list_books(request):
     books = Book.objects.all()
@@ -40,22 +41,22 @@ class LogoutView(LogoutView):
     success_url = reverse_lazy('logout')   
     
 # Role-Based Views
-def check_role(role_name):
-    def decorator(user):
-        return user.is_authenticated and user.userprofile.role==role_name
-    return decorator
+def role_check(required_role):
+    def check(user):
+        return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == required_role
+    return check
 
 @login_required
-@user_passes_test(check_role('Admin'))
+@user_passes_test(role_check('Admin'))
 def admin_view(request):
     return render(request, 'admin_view.html')
 
 @login_required
-@user_passes_test(check_role('Librarian'))
+@user_passes_test(role_check('Librarian'))
 def admin_view(request):
     return render(request, 'librarian_view.html')
 
 @login_required
-@user_passes_test(check_role('Member'))
+@user_passes_test(role_check('Member'))
 def admin_view(request):
     return render(request, 'member_view.html')
