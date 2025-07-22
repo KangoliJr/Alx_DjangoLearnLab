@@ -53,10 +53,10 @@ def admin_view(request):
 
 @login_required
 @user_passes_test(role_check('Librarian'))
-def admin_view(request):
+def librarian_view(request):
     return render(request, 'librarian_view.html')
 
 @login_required
 @user_passes_test(role_check('Member'))
-def admin_view(request):
+def member_view(request):
     return render(request, 'member_view.html')
