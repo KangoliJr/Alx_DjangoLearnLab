@@ -46,7 +46,9 @@ class LogoutView(LogoutView):
 # Role-Based Views
 def role_check(required_role):
     def check(user):
-        return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == required_role
+        if user.is_authenticated and hasattr(user, 'profile'):
+            return user.profile.role == required_role
+        return False
     return check
 
 @login_required
