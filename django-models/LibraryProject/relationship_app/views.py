@@ -29,7 +29,10 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            profile = user.profile
+            profile.role = 'Member'
+            profile.save()
             return redirect(reverse_lazy('login'))
     else:
         form = UserCreationForm()
