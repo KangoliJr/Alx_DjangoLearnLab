@@ -1,13 +1,15 @@
-from django.shortcuts import render, redirect
-from .models import Book, Library, UserProfile
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Book, Library, UserProfile, Author
 from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView #appleicable if I use CBV
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django import forms
+
+
 # Create your views here.
 def list_books(request):
     books = Book.objects.all()
@@ -36,12 +38,15 @@ def register(request):
     return render(request, 'relationship_app/register.html', {'form': form})
 class LoginView(LoginView):
     success_url = reverse_lazy('login')
-    # pass
+
 
 class LogoutView(LogoutView):
     success_url = reverse_lazy('logout') 
-    # pass  
-    
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ['titile','author']
 # Role-Based Views
 def role_check(required_role):
     def check(user):
@@ -65,18 +70,38 @@ def librarian_view(request):
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
-# @login_required(login_url=reverse_lazy('login'))
-# @user_passes_test(role_check('Admin'), login_url=reverse_lazy('login'))
-# def admin_view(request):
-#     return render(request, 'relationship_app/admin_view.html', {'message': 'Welcome, Admin!'})
 
-# @login_required(login_url=reverse_lazy('login'))
-# @user_passes_test(role_check('Librarian'), login_url=reverse_lazy('login'))
-# def librarian_view(request):
 
-#     return render(request, 'relationship_app/librarian_view.html', {'message': 'Welcome, Librarian!'})
+@permission_required('relationship_app.can_add_book', login_url=reverse_lazy('login'))
+@login_required(login_url=reverse_lazy('login'))
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse_lazy('list_books'))
+    else:
+        form = BookForm()
+    return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Add'})
 
-# @login_required(login_url=reverse_lazy('login'))
-# @user_passes_test(role_check('Member'), login_url=reverse_lazy('login'))
-# def member_view(request):
-#     return render(request, 'relationship_app/member_view.html', {'message': 'Welcome, Member!'})
+@permission_required('relationship_app.can_change_book', login_url=reverse_lazy('login'))
+@login_required(login_url=reverse_lazy('login'))
+def edit_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse_lazy('list_books'))
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Edit'})
+
+@permission_required('relationship_app.can_delete_book', login_url=reverse_lazy('login'))
+@login_required(login_url=reverse_lazy('login'))
+def delete_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        book.delete()
+        return redirect(reverse_lazy('list_books'))
+    return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
