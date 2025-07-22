@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test, per
 from django import forms
 
 
+
 # Create your views here.
 def list_books(request):
     books = Book.objects.all()
@@ -46,7 +47,7 @@ class LogoutView(LogoutView):
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ['titile','author']
+        fields = ['title','author']
 # Role-Based Views
 def role_check(required_role):
     def check(user):
