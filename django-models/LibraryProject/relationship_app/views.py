@@ -35,12 +35,12 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 class LoginView(LoginView):
-    # success_url = reverse_lazy('login')
-    pass
+    success_url = reverse_lazy('login')
+    # pass
 
 class LogoutView(LogoutView):
-    # success_url = reverse_lazy('logout') 
-    pass  
+    success_url = reverse_lazy('logout') 
+    # pass  
     
 # Role-Based Views
 def role_check(required_role):
@@ -50,33 +50,33 @@ def role_check(required_role):
         return False
     return check
 
-# @login_required
-# @user_passes_test(role_check('Admin'))
-# def admin_view(request):
-#     return render(request, 'relationship_app/admin_view.html')
-
-# @login_required
-# @user_passes_test(role_check('Librarian'))
-# def librarian_view(request):
-#     return render(request, 'relationship_app/librarian_view.html')
-
-# @login_required
-# @user_passes_test(role_check('Member'))
-# def member_view(request):
-#     return render(request, 'relationship_app/member_view.html')
-
-@login_required(login_url=reverse_lazy('login'))
-@user_passes_test(role_check('Admin'), login_url=reverse_lazy('login'))
+@login_required
+@user_passes_test(role_check('Admin'))
 def admin_view(request):
-    return render(request, 'relationship_app/admin_view.html', {'message': 'Welcome, Admin!'})
+    return render(request, 'relationship_app/admin_view.html')
 
-@login_required(login_url=reverse_lazy('login'))
-@user_passes_test(role_check('Librarian'), login_url=reverse_lazy('login'))
+@login_required
+@user_passes_test(role_check('Librarian'))
 def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
 
-    return render(request, 'relationship_app/librarian_view.html', {'message': 'Welcome, Librarian!'})
-
-@login_required(login_url=reverse_lazy('login'))
-@user_passes_test(role_check('Member'), login_url=reverse_lazy('login'))
+@login_required
+@user_passes_test(role_check('Member'))
 def member_view(request):
-    return render(request, 'relationship_app/member_view.html', {'message': 'Welcome, Member!'})
+    return render(request, 'relationship_app/member_view.html')
+
+# @login_required(login_url=reverse_lazy('login'))
+# @user_passes_test(role_check('Admin'), login_url=reverse_lazy('login'))
+# def admin_view(request):
+#     return render(request, 'relationship_app/admin_view.html', {'message': 'Welcome, Admin!'})
+
+# @login_required(login_url=reverse_lazy('login'))
+# @user_passes_test(role_check('Librarian'), login_url=reverse_lazy('login'))
+# def librarian_view(request):
+
+#     return render(request, 'relationship_app/librarian_view.html', {'message': 'Welcome, Librarian!'})
+
+# @login_required(login_url=reverse_lazy('login'))
+# @user_passes_test(role_check('Member'), login_url=reverse_lazy('login'))
+# def member_view(request):
+#     return render(request, 'relationship_app/member_view.html', {'message': 'Welcome, Member!'})

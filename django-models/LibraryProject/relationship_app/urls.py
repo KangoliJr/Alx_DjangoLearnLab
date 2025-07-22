@@ -13,5 +13,8 @@ urlpatterns = [
     path('admin/', views.admin_view, name='admin-view'),
     path('librarian-view/', views.librarian_view, name='librarian_view'),
     path('member-view/', views.member_view, name='member-view'),
+    # path('admin-dashboard/', views.admin_view, name='admin_dashboard'),
+    # path('librarian-dashboard/', views.librarian_view, name='librarian_dashboard'),
+    # path('member-dashboard/', views.member_view, name='member_view'),
 
 ]
