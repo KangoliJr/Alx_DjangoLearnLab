@@ -13,7 +13,8 @@ admin.site.register(Book)
 
 
 
-class UserAdmin(DefaultUserAdmin):
+class CustomUserAdmin(DefaultUserAdmin):
     pass
 
-admin.site.register(CustomUser, UserAdmin)
+# admin.site.register(CustomUser, UserAdmin)
+admin.site.register(CustomUser, CustomUserAdmin)
