@@ -1,7 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser,BaseUserManager
 from django.db.models.signals import post_save 
 from django.dispatch import receiver
+
 # Create your models here.
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -54,4 +55,29 @@ class UserProfile(models.Model):
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
+        
+        
+# advanced features
+class CustomUser(AbstractUser):
+    date_of_birth = models.DateField
+    profile_photo = models.ImageField
+    
+class CustomUserManager(BaseUserManager):
+    def create_user(self, date_of_birth, profile_photo):
+        if not profile_photo:
+            raise ValueError("Please add a Profile photo")
+        user = self.model(profile_photo=self.profile_photo(profile_photo))
+        user.set_date_of_birth(date_of_birth)
+        user.save(using=self.db)
+        
+        return user
+    
+    def create_superuser(self, date_of_birth, profile_photo):
+        user = self.create_user(date_of_birth,profile_photo)
+        
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        
+        return user
         
