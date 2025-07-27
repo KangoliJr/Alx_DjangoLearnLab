@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Example</title>
+</head>
+<body>
+    <h1>Generic Form Example</h1>
+
+    <form method="post">
+        {% csrf_token %} 
+        {{ form.as_p }} 
+        <button type="submit">Submit</button>
+    </form>
+
+    <p>This is a placeholder for a generic form template. Remember to use `{% csrf_token %}` for all POST forms.</p>
+</body>
+</html>
