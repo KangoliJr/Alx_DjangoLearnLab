@@ -59,6 +59,7 @@ CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'",)
+SECURE_BROWSER_XSS_FILTER = True
 
 TEMPLATES = [
     {
