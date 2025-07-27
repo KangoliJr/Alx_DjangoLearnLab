@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Book
-from django import forms
+from django import forms 
+from .forms import ExampleForm
 # Create your views here.
 class BookForm(forms.ModelForm):
     class Meta:
@@ -48,3 +49,19 @@ def book_delete(request, pk):
         return redirect('book_list')
     # For GET request, display a confirmation page
     return render(request, 'bookshelf/book_confirm_delete.html', {'book': book})
+
+# exampleform
+@login_required
+def example_form_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            print("Form is valid! Data:", form.cleaned_data)
+            return redirect('form_success')
+    else:
+        form = ExampleForm() 
+    
+   
+    return render(request, 'bookshelf/form_example.html', {'form': form})
+
+
