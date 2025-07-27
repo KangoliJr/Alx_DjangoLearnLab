@@ -13,7 +13,7 @@ def __str__(self):
 
 # advanced features
 class CustomUser(AbstractUser):
-    date_of_birth = models.DateField
+    date_of_birth = models.DateField(null=True, blank=True)
     profile_photo = models.ImageField
     
 class CustomUserManager(BaseUserManager):
