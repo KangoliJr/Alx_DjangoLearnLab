@@ -24,6 +24,10 @@ class Book(models.Model):
             ('can_add_book', 'can_add_book'),
             ('can_change_book', 'can_change_book'),
             ('can_delete_book', 'can_delete_book'),
+            ('can_view', 'can_view'),
+            ('can_create', 'can_create'),
+            ('can_delete', 'can_delete'),
+            
         ]
     
 class Library(models.Model):
