@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Book
+from .models import Book, CustomUser
+from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
 # from .models import User
 # Register your models here.
@@ -10,3 +11,9 @@ class BookAdmin(admin.ModelAdmin):
     
 admin.site.register(Book)
 
+
+
+class UserAdmin(DefaultUserAdmin):
+    pass
+
+admin.site.register(CustomUser, UserAdmin)
