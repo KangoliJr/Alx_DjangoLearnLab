@@ -26,7 +26,7 @@ class Book(models.Model):
             ('can_delete_book', 'can_delete_book'),
             ('can_view', 'can_view'),
             ('can_create', 'can_create'),
-            ('can_delete', 'can_delete'),
+            ('can_delete', 'can_delete')
             
         ]
     
