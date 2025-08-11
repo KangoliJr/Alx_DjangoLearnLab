@@ -11,3 +11,7 @@ methods
 GET
 PUT
 DELETE
+
+
+filtering
+GET/api/books/
