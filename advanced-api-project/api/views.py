@@ -4,18 +4,32 @@ from .serializers import BookSerializer
 from .models import Book
 # Create your views here.
 
-class BookListCreateAPIView(generics.ListCreateAPIView):
+class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
-    # custom creation
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-class  BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
+class BookCreateView(generics.CreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
     
+    # custom authentication
+    
+def perform_create(self, serializer):
+    serializer.save(owner=self.request.user)
+    
+class BookUpdateView(generics.UpdateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+class BookDeleteView(generics.DestroyAPIView):
+    queryset = Book.objescts.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
