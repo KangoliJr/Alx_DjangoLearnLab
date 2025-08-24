@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+    <article >
+        <h2 >{{ post.title }}</h2>
+        <p >by {{ post.author }} on {{ post.published_date|date:"F d, Y" }}</p>
+        <div >
+            <p>{{ post.content }}</p>
+        </div>
+        {% if user.is_authenticated and user == post.author %}
+            <div class="flex space-x-4">
+                <a href="{% url 'blog_update' pk=post.pk %}" >Edit</a>
+                <a href="{% url 'blog_delete' pk=post.pk %}" >Delete</a>
+            </div>
+        {% endif %}
+    </article>
+
+    <section>
+        <h3 >Comments ({{ comments.count }})</h3>
+        <div class="space-y-4">
+            {% for comment in comments %}
+                <div >
+                    <p >{{ comment.author.username }} <span>- {{ comment.created_at|date:"M d, Y H:i" }}</span></p>
+                    <p class="text-gray-700 mt-1">{{ comment.content }}</p>
+                    {% if user.is_authenticated and user == comment.author %}
+                        <div class="flex space-x-2 mt-2">
+                            <a href="{% url 'comment_update' post_pk=post.pk pk=comment.pk %}" >Edit</a>
+                            <a href="{% url 'comment_delete' post_pk=post.pk pk=comment.pk %}" >Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No comments yet</p>
+            {% endfor %}
+        </div>
+
+        {% if user.is_authenticated %}
+            <div>
+                <h4 >Leave a Comment</h4>
+                <form method="post" action="{% url 'comment_create' pk=post.pk %}" class="space-y-4">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button type="submit">Submit Comment</button>
+                </form>
+            </div>
+        {% else %}
+            <p >Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+        {% endif %}
+    </section>
+{% endblock %}
+New Template: blog/templates/blog/comment_form.html (for editing comments)
+
+HTML
+
+{% extends 'base.html' %}
+{% block content %}
+    <div class="p-6 bg-white rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Edit Comment</h2>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Update Comment</button>
+            <a href="{% url 'blog_detail' pk=object.post.pk %}" >Cancel</a>
+        </form>
+    </div>
+{% endblock %}
