@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Comment
 from django.contrib.auth import login, logout, authenticate
-# from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, UserProfileForm, PostForm, CommentForm
 from django.contrib import messages
@@ -171,7 +170,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         # Redirect back to the post detail page after deleting a comment
         return reverse('blog_detail', kwargs={'pk': self.object.post.pk})
 
-class TagPostListView(ListView):
+class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/blog_list.html'
     context_object_name = 'posts'
