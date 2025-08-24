@@ -9,6 +9,9 @@ from django.views.generic import(ListView, DetailView,CreateView,UpdateView,Dele
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.urls import reverse
+from django.db.models import Q 
+from taggit.models import Tag 
+
 # Create your views here.
 def home(request):
     context = {
@@ -167,3 +170,54 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         # Redirect back to the post detail page after deleting a comment
         return reverse('blog_detail', kwargs={'pk': self.object.post.pk})
+
+class TagPostListView(ListView):
+    model = Post
+    template_name = 'blog/blog_list.html'
+    context_object_name = 'posts'
+    ordering = ['-published_date']
+
+    def get_queryset(self):
+        tag_slug = self.kwargs['tag_slug']
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        return Post.objects.filter(tags__in=[tag]).order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag_name'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug']).name
+        return context
+
+
+class PostSearchView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'search_results'
+    paginate_by = 10 
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(tags__name__icontains=query) 
+            ).distinct().order_by('-published_date')
+        return Post.objects.none() 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q', '')
+        return context
+
+# Existing register and profile views 
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registration successful.")
+            return redirect('blog_list')
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'blog/register.html', {'form': form})

@@ -17,6 +17,17 @@
                 <li><a href="{% url 'register' %}">Register</a></li>
                 <li><a href="{% url 'profile' %}">Profile</a></li>
             </ul>
+
+            <!-- Search Bar -->
+            <form action="{% url 'post_search' %}" method="get" class="flex">
+                <input type="text" name="q" placeholder="Search posts..."
+                        class="px-3 py-1 rounded-l-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value="{{ request.GET.q|default:'' }}">
+                <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 transition-colors">Search</button>
+            </form>
+            <form method="get" action="{% url 'post_search' %}">
+                <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+                <button type="submit">Search</button>
         </nav>
     </header>
 

@@ -23,6 +23,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content',]
+        widgets = {
+        'tags': forms.TextInput(attrs={'placeholder': 'Comma-separated tags (e.g., django, webdev)'}),
+    }
         
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -32,3 +35,7 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your comment here...'}),
         }
+        
+    widgets = {
+        'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your comment here...'}),
+    }
