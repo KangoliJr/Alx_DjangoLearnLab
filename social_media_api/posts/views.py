@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
-from rest_framework import viewsets, filters, permissions
+from rest_framework import viewsets, filters, permissions, generics
 from rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class IsAuthorOrReadOnly(permissions.BasePermission):
@@ -42,3 +43,13 @@ class CommentViewSet(viewsets.ModelViewSet):
         post_id = self.kwargs.get('post_pk')
         post = Post.objects.get(pk=post_id)
         serializer.save(author=self.request.user, post=post)
+
+class UserFeedView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        followed_users = user.following.all()
+        return Post.objects.filter(author__in=followed_users).order_by('-created_at')
