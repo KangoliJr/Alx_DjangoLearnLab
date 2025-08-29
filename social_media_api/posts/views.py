@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from notifications.models import Notification
 from django.contrib.contenttypes.models import ContentType
+from rest_framework.generics import get_object_or_404 
 # Create your views here.
 class IsAuthorOrReadOnly(permissions.BasePermission):
     """
@@ -71,12 +72,10 @@ class UserFeedView(generics.ListAPIView):
 
 class LikeView(APIView):
     permission_classes = [IsAuthenticated]
-
+    
     def post(self, request, pk):
-        try:
-            post = Post.objects.get(pk=pk)
-        except Post.DoesNotExist:
-            return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+        post = get_object_or_404(Post, pk=pk)
+        
         
         if post.likes.filter(user=request.user).exists():
             post.likes.filter(user=request.user).delete()
