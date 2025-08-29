@@ -5,6 +5,7 @@ from rest_framework import viewsets, filters, permissions, generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 # Create your views here.
 class IsAuthorOrReadOnly(permissions.BasePermission):
@@ -52,4 +53,16 @@ class UserFeedView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         followed_users = user.following.all()
-        return Post.objects.filter(author__in=followed_users).order_by
+        posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+
+        feed_data = [
+            {
+                "id": posts.id,
+                "author": posts.author.username,
+                "title": posts.title,
+                "content": posts.content,
+                "created_at": posts.created_at,
+            }
+            for posts in posts
+        ]
+        return Response(feed_data)
