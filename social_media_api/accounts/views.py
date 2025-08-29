@@ -7,7 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import User
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, get_user_model
-User = get_user_model()
+CustomUser = get_user_model()
+
 
 # Create your views here.
 class UserRegistrationView(generics.CreateAPIView):
@@ -32,7 +33,7 @@ class UserLoginView(generics.GenericAPIView):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
     
 class UserListView(generics.ListAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     permission_classes = [IsAuthenticated]
     
     def get_serializer_class(self):
