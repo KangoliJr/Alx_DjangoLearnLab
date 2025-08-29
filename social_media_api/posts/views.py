@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework import viewsets, filters, permissions, generics
-from rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
