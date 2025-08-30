@@ -92,3 +92,16 @@ class LikeView(APIView):
             return Response({'message': 'Post liked successfully.'}, status=status.HTTP_201_CREATED)
         else:
             return Response({'message': 'you already liked this post.'}, status=400)
+        
+class UnlikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(user=request.user, post=post)
+        
+        if like.exists():
+            like.delete()
+            return Response({'message': 'Post unliked successfully!'})
+        else:
+            return Response({'message': 'You have not liked this post yet.'}, status=400)
