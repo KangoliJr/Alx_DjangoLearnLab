@@ -74,14 +74,11 @@ class LikeView(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         like, created = Like.objects.get_or_create(user=request.user, post=post)
-        
+     
         if post.likes.filter(user=request.user).exists():
             post.likes.filter(user=request.user).delete()
-            return Response({'message': 'Post unliked successfully.'}, status=status.HTTP_200_OK)
-        else:
-            Like.objects.create(post=post, user=request.user)
             
             if post.author != request.user:
                 Notification.objects.create(
@@ -91,5 +88,7 @@ class LikeView(APIView):
                     target_content_type=ContentType.objects.get_for_model(Post),
                     target_object_id=post.pk
                 )
-            
+        
             return Response({'message': 'Post liked successfully.'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'message': 'you already liked this post.'}, status=400)
